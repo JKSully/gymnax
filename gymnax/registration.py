@@ -144,4 +144,25 @@ def make(env_id: str, **env_kwargs):
     required_attributes = ("default_params", "reset", "step")
     if any(not hasattr(env, attribute) for attribute in required_attributes):
         raise TypeError("Environment factory must return a Gymnax Environment")
-    return env, env.default_params
+    class _EnvWithParams:
+        """Wrapper that exposes the environment and its default params.
+
+        Attribute access is delegated to the inner environment. The object is
+        iterable and yields ``(env, env.default_params)`` so older call sites
+        using tuple-unpacking continue to work.
+        """
+
+        def __init__(self, env_obj):
+            self._env = env_obj
+
+        def __getattr__(self, name):
+            return getattr(self._env, name)
+
+        def __iter__(self):
+            yield self._env
+            yield self._env.default_params
+
+        def __repr__(self):
+            return repr(self._env)
+
+    return _EnvWithParams(env)

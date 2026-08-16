@@ -23,12 +23,17 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project.optional-dependencies]
 dev = [
     "pytest",
     "pytest-cov",
     "ruff",
     "mypy",
+    "notebook"
 ]
 test = [
     "bsuite>=0.3.6,<0.4",
@@ -39,6 +44,11 @@ test = [
 ]
 visualize = [
     "gymnasium[classic-control]>=1.1,<1.2",
+]
+examples = [
+    "dm-haiku",
+    "evosax",
+    "rlax",
 ]
 
 [project.urls]
@@ -60,3 +70,6 @@ ignore = ["N801", "N802", "N803", "N806", "N815", "W191"]
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
+
+[tool.uv.sources]
+evosax = { git = "https://github.com/RobertTLange/evosax.git" }
